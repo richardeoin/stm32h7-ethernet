@@ -188,7 +188,7 @@ impl TDesRing {
         // Move the tail pointer (TPR) to the next descriptor
         let x = (x + 1) % ETH_NUM_TD;
         cortex_m::interrupt::free(|_cs| unsafe {
-            let dma = { &*stm32::ETHERNET_DMA::ptr() };
+            let dma = &*stm32::ETHERNET_DMA::ptr();
 
             // Ensure changes to the descriptor are committed before
             // DMA engine sees tail pointer store
@@ -416,8 +416,8 @@ pub unsafe fn ethernet_init(
     ring: &mut DesRing,
     mac_addr: EthernetAddress,
 ) -> (EthernetDMA, EthernetMAC) {
-    let rcc = { &*stm32::RCC::ptr() };
-    let syscfg = { &*stm32::SYSCFG::ptr() };
+    let rcc = &*stm32::RCC::ptr();
+    let syscfg = &*stm32::SYSCFG::ptr();
 
     rcc.apb4enr.modify(|_, w| w.syscfgen().set_bit());
     rcc.ahb1enr.modify(|_, w| {
