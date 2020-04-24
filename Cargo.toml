@@ -12,12 +12,11 @@ readme = "README.md"
 exclude = [".gitignore"]
 
 [package.metadata.docs.rs]
-features = ["stm32h7xx-hal/rt", "stm32h7xx-hal/stm32h743v"]
+features = ["stm32h743v"]
 targets = ["thumbv7em-none-eabihf"]
 
 [dependencies]
 cortex-m = "0.6.2"
-stm32h7xx-hal = "0.4.0"
 log = "0.4.8"
 
 [dependencies.smoltcp]
@@ -25,10 +24,9 @@ version = "0.6.0"
 default-features = false
 features = ["ethernet", "proto-ipv4", "proto-dhcpv4", "socket-tcp", "log", "socket-raw"]
 
-[dev-dependencies]
-cortex-m-rt = "0.6.12"
-panic-itm = "0.4.1"
-cortex-m-log = { version = "0.6.1", features = ["itm", "log-integration"] }
+[dependencies.stm32h7xx-hal]
+version = "0.4.0"
+# NOTE: Keep re-exported feature flags below up-to-date with stm32h7xx-hal
 
 [features]
 default = ["phy_lan8742a", "phy0"]
@@ -36,7 +34,23 @@ phy_ksz8081r = []
 phy_lan8742a = []
 phy0 = []
 phy1 = []
+stm32h742 = ["stm32h7xx-hal/stm32h742"]
+stm32h743 = ["stm32h7xx-hal/stm32h743"]
+stm32h753 = ["stm32h7xx-hal/stm32h753"]
+stm32h750 = ["stm32h7xx-hal/stm32h750"]
+stm32h742v = ["stm32h7xx-hal/stm32h742v"]
+stm32h743v = ["stm32h7xx-hal/stm32h743v"]
+stm32h753v = ["stm32h7xx-hal/stm32h753v"]
+stm32h750v = ["stm32h7xx-hal/stm32h750v"]
+stm32h747cm7 = ["stm32h7xx-hal/stm32h747cm7"]
+
+
+[dev-dependencies]
+cortex-m-rt = "0.6.12"
+panic-itm = "0.4.1"
+cortex-m-log = { version = "0.6.1", features = ["itm", "log-integration"] }
+
 
 [[example]]
 name = "stm32h747i-disco"
-required-features = ["phy_lan8742a", "stm32h7xx-hal/rt", "stm32h7xx-hal/stm32h747cm7"]
+required-features = ["phy_lan8742a", "stm32h7xx-hal/rt", "stm32h747cm7"]
