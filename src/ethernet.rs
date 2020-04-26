@@ -22,16 +22,13 @@
 //! [quartiq/stabilizer]: https://github.com/quartiq/stabilizer
 //! [notes]: https://github.com/quartiq/stabilizer/commit/ab1735950b2108eaa8d51eb63efadcd2e25c35c4
 
-use core;
-use cortex_m;
-use stm32h7xx_hal::stm32;
-
 use smoltcp::{
     self,
     phy::{self, DeviceCapabilities},
     time::Instant,
     wire::EthernetAddress,
 };
+use stm32h7xx_hal::stm32;
 
 use crate::ETH_PHY_ADDR;
 use crate::{StationManagement, PHY};
@@ -358,6 +355,12 @@ impl RDesRing {
     }
 
     /// Access the buffer pointed to by the next RDes
+    ///
+    /// # Safety
+    ///
+    /// Ensure that release() is called between subsequent calls to this
+    /// function.
+    #[allow(clippy::mut_from_ref)]
     pub unsafe fn buf_as_slice_mut(&self) -> &mut [u8] {
         let x = self.rdidx;
 

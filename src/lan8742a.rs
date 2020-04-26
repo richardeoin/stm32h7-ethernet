@@ -106,7 +106,7 @@ impl EthernetMAC {
     }
 
     pub fn link_established(&mut self) -> bool {
-        return self.phy_poll_link();
+        self.phy_poll_link()
     }
 
     pub fn block_until_link(&mut self) {
