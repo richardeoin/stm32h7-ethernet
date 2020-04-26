@@ -1,47 +1,25 @@
+//! Demo for STM32H747I-DISCO eval board
+//!
+//! The ethernet ring buffers are placed in SRAM3, where they can be
+//! accessed by both the core and the Ethernet DMA.
+//!
+//! This demo doesn't use smoltcp - see the stm32h747i-disco-rtfm demo
+#![deny(warnings)]
 #![no_main]
 #![no_std]
 
-extern crate cortex_m_rt as rt;
-use core::sync::atomic::{AtomicU32, Ordering};
+use cortex_m;
+use cortex_m_rt as rt;
 use rt::{entry, exception};
+use stm32h7_ethernet as ethernet;
 
-#[macro_use]
-extern crate log;
+use log::info; // TODO your own logger implementation
 
-extern crate cortex_m;
-extern crate panic_itm;
-extern crate stm32h7_ethernet as ethernet;
+extern crate panic_halt;
 
-use stm32h7xx_hal::gpio::Speed;
+use stm32h7xx_hal::gpio::Speed::*;
 use stm32h7xx_hal::hal::digital::v2::OutputPin;
-use stm32h7xx_hal::rcc::CoreClocks;
 use stm32h7xx_hal::{prelude::*, stm32, stm32::interrupt};
-use Speed::*;
-
-use cortex_m_log::log::{trick_init, Logger};
-use cortex_m_log::{
-    destination::Itm, printer::itm::InterruptSync as InterruptSyncItm,
-};
-
-/// Configure SYSTICK for 1ms timebase
-fn systick_init(syst: &mut stm32::SYST, clocks: CoreClocks) {
-    let c_ck_mhz = clocks.c_ck().0 / 1_000_000;
-
-    let syst_calib = 0x3E8;
-
-    syst.set_clock_source(cortex_m::peripheral::syst::SystClkSource::Core);
-    syst.set_reload((syst_calib * c_ck_mhz) - 1);
-    syst.enable_interrupt();
-    syst.enable_counter();
-}
-
-/// ======================================================================
-/// Entry point
-/// ======================================================================
-
-/// TIME is an atomic u32 that counts milliseconds. Although not used
-/// here, it is very useful to have for network protocols
-static TIME: AtomicU32 = AtomicU32::new(0);
 
 /// Locally administered MAC address
 const MAC_ADDRESS: [u8; 6] = [0x02, 0x00, 0x11, 0x22, 0x33, 0x44];
@@ -56,20 +34,11 @@ fn main() -> ! {
     let dp = stm32::Peripherals::take().unwrap();
     let mut cp = stm32::CorePeripherals::take().unwrap();
 
-    // Initialise logging...
-    let logger = Logger {
-        inner: InterruptSyncItm::new(Itm::new(cp.ITM)),
-        level: log::LevelFilter::Trace,
-    };
-    unsafe {
-        let _ = trick_init(&logger);
-    }
-
     // Initialise power...
     let pwr = dp.PWR.constrain();
-    let vos = pwr.freeze();
+    let vos = unsafe { pwr.smps().freeze() };
 
-    // Initialise SRAM3
+    // Link the SRAM3 power state to CPU1
     dp.RCC.ahb2enr.modify(|_, w| w.sram3en().set_bit());
 
     // Initialise clocks...
@@ -77,11 +46,7 @@ fn main() -> ! {
     let mut ccdr = rcc
         .sys_ck(200.mhz())
         .hclk(200.mhz())
-        .pll1_r_ck(100.mhz()) // for TRACECK
         .freeze(vos, &dp.SYSCFG);
-
-    // Get the delay provider.
-    let delay = cp.SYST.delay(ccdr.clocks);
 
     // Initialise system...
     cp.SCB.invalidate_icache();
@@ -131,20 +96,10 @@ fn main() -> ! {
     }
 
     // ----------------------------------------------------------
-    // Begin periodic tasks
-
-    systick_init(&mut delay.free(), ccdr.clocks);
-    unsafe {
-        cp.SCB.shpr[15 - 4].write(128);
-    } // systick exception priority
-
-    // ----------------------------------------------------------
     // Main application loop
 
     let mut eth_up = false;
     loop {
-        let _time = TIME.load(Ordering::Relaxed);
-
         // Ethernet
         let eth_last = eth_up;
         eth_up = eth_mac.phy_poll_link();
@@ -167,11 +122,6 @@ fn main() -> ! {
 #[interrupt]
 fn ETH() {
     unsafe { ethernet::interrupt_handler() }
-}
-
-#[exception]
-fn SysTick() {
-    TIME.fetch_add(1, Ordering::Relaxed);
 }
 
 #[exception]
