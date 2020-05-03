@@ -105,8 +105,8 @@ fn main() -> ! {
     let _rmii_rxd0 = gpioc.pc4.into_alternate_af11().set_speed(VeryHigh);
     let _rmii_rxd1 = gpioc.pc5.into_alternate_af11().set_speed(VeryHigh);
     let _rmii_tx_en = gpiog.pg11.into_alternate_af11().set_speed(VeryHigh);
-    let _rmii_txd0 = gpiog.pg12.into_alternate_af11().set_speed(VeryHigh);
-    let _rmii_txd1 = gpiog.pg13.into_alternate_af11().set_speed(VeryHigh);
+    let _rmii_txd0 = gpiog.pg13.into_alternate_af11().set_speed(VeryHigh);
+    let _rmii_txd1 = gpiog.pg12.into_alternate_af11().set_speed(VeryHigh);
 
     // Initialise ethernet...
     assert_eq!(ccdr.clocks.hclk().0, 200_000_000); // HCLK 200MHz
