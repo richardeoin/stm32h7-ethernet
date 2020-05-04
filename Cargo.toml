@@ -44,15 +44,22 @@ stm32h753v = ["stm32h7xx-hal/stm32h753v"]
 stm32h750v = ["stm32h7xx-hal/stm32h750v"]
 stm32h747cm7 = ["stm32h7xx-hal/stm32h747cm7"]
 
-
 [dev-dependencies]
 cortex-m-rt = "0.6.12"
-panic-itm = "0.4.1"
-cortex-m-log = { version = "0.6.1", features = ["itm", "log-integration"] }
+panic-halt = "0.2.0"
+cortex-m-rtfm = "0.5.1"
 
+[dev-dependencies.smoltcp]
+version = "0.6.0"
+default-features = false
+features = ["ethernet", "proto-ipv4", "proto-ipv6", "socket-raw"]
 
 [[example]]
 name = "stm32h747i-disco"
+required-features = ["phy_lan8742a", "stm32h7xx-hal/rt", "stm32h747cm7"]
+
+[[example]]
+name = "stm32h747i-disco-rtfm"
 required-features = ["phy_lan8742a", "stm32h7xx-hal/rt", "stm32h747cm7"]
 
 [[example]]
