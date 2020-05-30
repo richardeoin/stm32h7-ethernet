@@ -31,6 +31,8 @@ Specifing device features is not nessesary if an identical version of
 stm32h7xx_hal is in use somewhere else in your dependency tree. In this
 case cargo unions the feature flags.
 
+_NB:_ There is no ethernet peripheral on H7A3/H7B3/H7B0 parts.
+
 ## Prerequisites
 
 ```
