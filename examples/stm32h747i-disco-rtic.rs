@@ -1,5 +1,5 @@
 //! Demo for STM32H747I-DISCO eval board using the Real Time for the Masses
-//! (RTFM) framework.
+//! (RTIC) framework.
 //!
 //! This demo responds to pings on 192.168.1.99 (IP address hardcoded below)
 //!
@@ -12,7 +12,7 @@
 #![no_std]
 
 use cortex_m;
-use rtfm::app;
+use rtic::app;
 use stm32h7_ethernet as ethernet;
 
 use log::info; // TODO your own logger implementation

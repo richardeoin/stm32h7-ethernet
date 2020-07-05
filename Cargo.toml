@@ -46,7 +46,7 @@ stm32h747cm7 = ["stm32h7xx-hal/stm32h747cm7"]
 [dev-dependencies]
 cortex-m-rt = "0.6.12"
 panic-halt = "0.2.0"
-cortex-m-rtfm = "0.5.1"
+cortex-m-rtic = "0.5.3"
 
 [dev-dependencies.smoltcp]
 version = "0.6.0"
@@ -58,7 +58,7 @@ name = "stm32h747i-disco"
 required-features = ["phy_lan8742a", "stm32h7xx-hal/rt", "stm32h747cm7"]
 
 [[example]]
-name = "stm32h747i-disco-rtfm"
+name = "stm32h747i-disco-rtic"
 required-features = ["phy_lan8742a", "stm32h7xx-hal/rt", "stm32h747cm7"]
 
 [[example]]
