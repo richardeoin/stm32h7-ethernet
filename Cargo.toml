@@ -18,14 +18,12 @@ targets = ["thumbv7em-none-eabihf"]
 [dependencies]
 cortex-m = "0.6.2"
 log = "0.4.8"
+stm32h7xx-hal = "0.6.0"
 
 [dependencies.smoltcp]
 version = "0.6.0"
 default-features = false
 features = ["ethernet", "proto-ipv4", "proto-dhcpv4", "socket-tcp", "log", "socket-raw"]
-
-[dependencies.stm32h7xx-hal]
-version = "0.4.0"
 # NOTE: Keep re-exported feature flags below up-to-date with stm32h7xx-hal
 # (Except for H7A3/H7B3/H7B0 parts, these have no ethernet peripheral)
 

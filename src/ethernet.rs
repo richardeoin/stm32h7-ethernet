@@ -411,6 +411,8 @@ pub struct EthernetMAC {
 ///
 /// Brings up the PHY.
 ///
+/// # Safety
+///
 /// `EthernetDMA` shall not be moved as it is initialised here
 pub unsafe fn ethernet_init(
     eth_mac: stm32::ETHERNET_MAC,
@@ -419,19 +421,22 @@ pub unsafe fn ethernet_init(
     ring: &mut DesRing,
     mac_addr: EthernetAddress,
 ) -> (EthernetDMA, EthernetMAC) {
-    let rcc = &*stm32::RCC::ptr();
-    let syscfg = &*stm32::SYSCFG::ptr();
+    // RCC
+    {
+        let rcc = &*stm32::RCC::ptr();
+        let syscfg = &*stm32::SYSCFG::ptr();
 
-    rcc.apb4enr.modify(|_, w| w.syscfgen().set_bit());
-    rcc.ahb1enr.modify(|_, w| {
-        w.eth1macen()
-            .set_bit()
-            .eth1txen()
-            .set_bit()
-            .eth1rxen()
-            .set_bit()
-    });
-    syscfg.pmcr.modify(|_, w| w.epis().bits(0b100)); // RMII
+        rcc.apb4enr.modify(|_, w| w.syscfgen().set_bit());
+        rcc.ahb1enr.modify(|_, w| {
+            w.eth1macen()
+                .set_bit()
+                .eth1txen()
+                .set_bit()
+                .eth1rxen()
+                .set_bit()
+        });
+        syscfg.pmcr.modify(|_, w| w.epis().bits(0b100)); // RMII
+    }
 
     // reset ETH_MAC - write 1 then 0
     //rcc.ahb1rstr.modify(|_, w| w.eth1macrst().set_bit());
