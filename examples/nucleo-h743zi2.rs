@@ -107,7 +107,7 @@ fn main() -> ! {
 
     // Initialise clocks...
     let rcc = dp.RCC.constrain();
-    let mut ccdr = rcc
+    let ccdr = rcc
         .sys_ck(200.mhz())
         .hclk(200.mhz())
         .pll1_r_ck(100.mhz()) // for TRACECK
@@ -124,10 +124,10 @@ fn main() -> ! {
     cp.DWT.enable_cycle_counter();
 
     // Initialise IO...
-    let gpioa = dp.GPIOA.split(&mut ccdr.ahb4);
-    let gpiob = dp.GPIOB.split(&mut ccdr.ahb4);
-    let gpioc = dp.GPIOC.split(&mut ccdr.ahb4);
-    let gpiog = dp.GPIOG.split(&mut ccdr.ahb4);
+    let gpioa = dp.GPIOA.split(ccdr.peripheral.GPIOA);
+    let gpiob = dp.GPIOB.split(ccdr.peripheral.GPIOB);
+    let gpioc = dp.GPIOC.split(ccdr.peripheral.GPIOC);
+    let gpiog = dp.GPIOG.split(ccdr.peripheral.GPIOG);
     let mut link_led = gpiob.pb0.into_push_pull_output(); // LED1, green
     link_led.set_high().ok();
 

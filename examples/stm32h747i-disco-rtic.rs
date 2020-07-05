@@ -125,14 +125,14 @@ const APP: () = {
     fn init(mut ctx: init::Context) -> init::LateResources {
         // Initialise power...
         let pwr = ctx.device.PWR.constrain();
-        let vos = unsafe { pwr.smps().freeze() };
+        let vos = pwr.smps().freeze();
 
         // Link the SRAM3 power state to CPU1
         ctx.device.RCC.ahb2enr.modify(|_, w| w.sram3en().set_bit());
 
         // Initialise clocks...
         let rcc = ctx.device.RCC.constrain();
-        let mut ccdr = rcc
+        let ccdr = rcc
             .sys_ck(200.mhz())
             .hclk(200.mhz())
             .freeze(vos, &ctx.device.SYSCFG);
@@ -145,10 +145,10 @@ const APP: () = {
         ctx.core.DWT.enable_cycle_counter();
 
         // Initialise IO...
-        let gpioa = ctx.device.GPIOA.split(&mut ccdr.ahb4);
-        let gpioc = ctx.device.GPIOC.split(&mut ccdr.ahb4);
-        let gpiog = ctx.device.GPIOG.split(&mut ccdr.ahb4);
-        let gpioi = ctx.device.GPIOI.split(&mut ccdr.ahb4);
+        let gpioa = ctx.device.GPIOA.split(ccdr.peripheral.GPIOA);
+        let gpioc = ctx.device.GPIOC.split(ccdr.peripheral.GPIOC);
+        let gpiog = ctx.device.GPIOG.split(ccdr.peripheral.GPIOG);
+        let gpioi = ctx.device.GPIOI.split(ccdr.peripheral.GPIOI);
         let mut link_led = gpioi.pi14.into_push_pull_output(); // LED3
         link_led.set_high().ok();
 

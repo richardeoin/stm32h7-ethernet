@@ -36,14 +36,14 @@ fn main() -> ! {
 
     // Initialise power...
     let pwr = dp.PWR.constrain();
-    let vos = unsafe { pwr.smps().freeze() };
+    let vos = pwr.smps().freeze();
 
     // Link the SRAM3 power state to CPU1
     dp.RCC.ahb2enr.modify(|_, w| w.sram3en().set_bit());
 
     // Initialise clocks...
     let rcc = dp.RCC.constrain();
-    let mut ccdr = rcc
+    let ccdr = rcc
         .sys_ck(200.mhz())
         .hclk(200.mhz())
         .freeze(vos, &dp.SYSCFG);
@@ -56,10 +56,10 @@ fn main() -> ! {
     cp.DWT.enable_cycle_counter();
 
     // Initialise IO...
-    let gpioa = dp.GPIOA.split(&mut ccdr.ahb4);
-    let gpioc = dp.GPIOC.split(&mut ccdr.ahb4);
-    let gpiog = dp.GPIOG.split(&mut ccdr.ahb4);
-    let gpioi = dp.GPIOI.split(&mut ccdr.ahb4);
+    let gpioa = dp.GPIOA.split(ccdr.peripheral.GPIOA);
+    let gpioc = dp.GPIOC.split(ccdr.peripheral.GPIOC);
+    let gpiog = dp.GPIOG.split(ccdr.peripheral.GPIOG);
+    let gpioi = dp.GPIOI.split(ccdr.peripheral.GPIOI);
     let mut link_led = gpioi.pi14.into_push_pull_output(); // LED3
     link_led.set_high().ok();
 
