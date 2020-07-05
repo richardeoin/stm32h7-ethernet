@@ -24,7 +24,7 @@ When using this crate as a dependency, it re-exports the device
 features so you can specify them in Cargo.toml
 
 ```
-stm32h7-ethernet = { version = 0.4.0, features = ["stm32h743v"] }
+stm32h7-ethernet = { version = 0.2.0, features = ["stm32h743v"] }
 ```
 
 Specifing device features is not nessesary if an identical version of
