@@ -16,6 +16,6 @@
 * Tidy unecessary brackets
 * Started Changelog
 
-[Unreleased]: https://github.com/stm32-rs/stm32h7xx-hal/compare/v0.2.0...HEAD
-[v0.2.0]: https://github.com/stm32-rs/stm32h7xx-hal/compare/v0.1.1...v0.2.0
-[v0.1.1]: https://github.com/stm32-rs/stm32h7xx-hal/compare/v0.1.0...v0.1.1
+[Unreleased]: https://github.com/richardeoin/stm32h7-ethernet/compare/v0.2.0...HEAD
+[v0.2.0]: https://github.com/richardeoin/stm32h7-ethernet/compare/v0.1.1...v0.2.0
+[v0.1.1]: https://github.com/richardeoin/stm32h7-ethernet/compare/v0.1.0...v0.1.1
